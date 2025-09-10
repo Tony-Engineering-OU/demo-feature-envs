@@ -1,0 +1,13 @@
+# Ignore all files by default
+*
+
+# Allow HTML files
+!*.html
+
+# Allow directories (so git can traverse them)
+!*/
+
+# Always track .gitignore itself
+!.gitignore
+
+!README.md
