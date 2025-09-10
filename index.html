@@ -1089,45 +1089,45 @@
     </div>
 
     <script>
-        // Job dependencies and timing configuration
+        // Job dependencies and timing configuration (80% faster than original - ultra-fast demo)
         const jobConfig = {
             // Lint stage
-            'api-eslint': { dependencies: [], duration: 2000, manual: false },
-            'check-conventional-commits': { dependencies: [], duration: 1500, manual: false },
-            'web-eslint': { dependencies: [], duration: 2500, manual: false },
+            'api-eslint': { dependencies: [], duration: 490, manual: false },
+            'check-conventional-commits': { dependencies: [], duration: 370, manual: false },
+            'web-eslint': { dependencies: [], duration: 610, manual: false },
             
             // Bump stage - depends on lint
-            'bump': { dependencies: ['api-eslint', 'check-conventional-commits', 'web-eslint'], duration: 3000, manual: false },
+            'bump': { dependencies: ['api-eslint', 'check-conventional-commits', 'web-eslint'], duration: 735, manual: false },
             
             // Build stage - depends on bump
-            'build-api': { dependencies: ['bump'], duration: 4000, manual: false },
-            'build-database-migrator': { dependencies: ['bump'], duration: 3500, manual: false },
-            'build-random-data-seeder': { dependencies: ['bump'], duration: 3000, manual: false },
-            'build-web': { dependencies: ['bump'], duration: 5000, manual: false },
-            'build-web-e2e-tests': { dependencies: ['bump'], duration: 4500, manual: false },
-            'build-web-maintenance': { dependencies: ['bump'], duration: 3500, manual: false },
+            'build-api': { dependencies: ['bump'], duration: 980, manual: false },
+            'build-database-migrator': { dependencies: ['bump'], duration: 860, manual: false },
+            'build-random-data-seeder': { dependencies: ['bump'], duration: 735, manual: false },
+            'build-web': { dependencies: ['bump'], duration: 1225, manual: false },
+            'build-web-e2e-tests': { dependencies: ['bump'], duration: 1100, manual: false },
+            'build-web-maintenance': { dependencies: ['bump'], duration: 860, manual: false },
             
             // Unit tests - depends on builds
-            'unit-tests': { dependencies: ['build-api', 'build-web'], duration: 6000, manual: false },
+            'unit-tests': { dependencies: ['build-api', 'build-web'], duration: 1470, manual: false },
             
             // Components tests - depends on web build
-            'web-components-tests': { dependencies: ['build-web'], duration: 4000, manual: false },
+            'web-components-tests': { dependencies: ['build-web'], duration: 980, manual: false },
             
             // E2E tests - depends on various builds
-            'api-e2e-tests': { dependencies: ['build-api', 'build-database-migrator'], duration: 8000, manual: false },
-            'web-e2e-tests': { dependencies: ['build-web', 'build-web-e2e-tests'], duration: 10000, manual: false },
+            'api-e2e-tests': { dependencies: ['build-api', 'build-database-migrator'], duration: 1960, manual: false },
+            'web-e2e-tests': { dependencies: ['build-web', 'build-web-e2e-tests'], duration: 2450, manual: false },
             
             // Post-release - depends on tests
             'publish-helm-chart-for-feature-environment': { 
                 dependencies: ['unit-tests', 'web-components-tests', 'api-e2e-tests', 'web-e2e-tests'], 
-                duration: 3000,
+                duration: 735,
                 manual: false
             },
             
             // Deploy - depends on post-release
             'deploy-to-feature-environment': { 
                 dependencies: ['publish-helm-chart-for-feature-environment'], 
-                duration: 5000,
+                duration: 1225,
                 manual: false
             },
             
@@ -1135,7 +1135,7 @@
             'link-with-another-db': { dependencies: ['deploy-to-feature-environment'], duration: 0, manual: true },
             'link-with-prod-db': { dependencies: ['deploy-to-feature-environment'], duration: 0, manual: true },
             'stop-environment': { dependencies: ['deploy-to-feature-environment'], duration: 0, manual: true },
-            'run-debug-feature': { dependencies: ['deploy-to-feature-environment'], duration: 3000, manual: false }
+            'run-debug-feature': { dependencies: ['deploy-to-feature-environment'], duration: 735, manual: false }
         };
 
         let jobStates = {};
