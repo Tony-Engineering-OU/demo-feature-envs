@@ -110,15 +110,18 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 120px;
-            height: 120px;
-            background: linear-gradient(45deg, #4299e1, #667eea);
-            border-radius: 50%;
+            width: 220px;
+            height: 160px;
+            background: #f0f0f0;
+            border-radius: 12px;
             display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 0 0 0 rgba(66, 153, 225, 0.4);
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
             z-index: 10;
+            border: 3px solid #666;
+            cursor: pointer;
+            transition: all 0.3s ease;
         }
 
         .pipeline-center.active {
@@ -137,27 +140,112 @@
             }
         }
 
-        .center-icon {
-            font-size: 40px;
+        .browser-preview {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            transition: filter 0.5s ease;
+        }
+
+        .browser-preview.pending {
+            filter: blur(2px) grayscale(0.7) brightness(0.8);
+        }
+
+        .browser-preview.loading {
+            filter: blur(1px) grayscale(0.3) brightness(0.9);
+            animation: pulse-preview 2s infinite;
+        }
+
+        .browser-preview.deployed {
+            filter: blur(0px) grayscale(0) brightness(1);
+        }
+
+        @keyframes pulse-preview {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        .mini-browser-header {
+            background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);
+            height: 28px;
+            display: flex;
+            align-items: center;
+            padding: 0 10px;
+            gap: 6px;
+        }
+
+        .mini-window-control {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .mini-window-control.close { background: #ff5f57; }
+        .mini-window-control.minimize { background: #ffbd2e; }
+        .mini-window-control.maximize { background: #28ca42; }
+
+        .mini-url-bar {
+            flex: 1;
+            margin-left: 10px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            height: 16px;
+            display: flex;
+            align-items: center;
+            padding: 0 8px;
+            font-size: 9px;
             color: white;
-            cursor: pointer;
-            transition: transform 0.2s ease;
+            font-family: monospace;
+            text-align: center;
         }
 
-        .center-icon:hover {
-            transform: scale(1.1);
+        .mini-browser-content {
+            flex: 1;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
         }
 
-        .center-icon.pending {
-            opacity: 0.6;
+        .deployment-status {
+            position: absolute;
+            top: 6px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 600;
+            z-index: 2;
         }
 
-        .center-icon.loading {
-            animation: spin 2s linear infinite;
+        .deployment-status.pending {
+            background: rgba(113, 128, 150, 0.9);
         }
 
-        .center-icon.deployed {
-            opacity: 1;
+        .deployment-status.loading {
+            background: rgba(251, 191, 36, 0.9);
+            color: #1a202c;
+        }
+
+        .deployment-status.deployed {
+            background: rgba(16, 185, 129, 0.9);
+        }
+
+        .mini-content-placeholder {
+            color: white;
+            font-size: 12px;
+            text-align: center;
+            opacity: 0.9;
+            font-weight: 500;
+        }
+
+        .pipeline-center:hover {
+            transform: translate(-50%, -50%) scale(1.05);
         }
 
         /* Stages positioned in a circle */
@@ -777,14 +865,29 @@
     <div class="pipeline-container">
         <h1 class="pipeline-title">CI/CD Pipeline Simulation</h1>
         
+        
         <div class="feature-url-preview" id="featureUrlPreview">
-            <div class="url">feature-123-improve-performance.app.company.ai</div>
+            <div class="url">feature-123-fix-bug.app.company.ai</div>
             <div class="status" id="featureStatus">Preparing deployment...</div>
         </div>
         
         <div class="pipeline-stages">
             <div class="pipeline-center" id="pipelineCenter" onclick="openFeatureModal()">
-                <div class="center-icon pending" id="centerIcon">⏳</div>
+                <div class="browser-preview pending" id="browserPreview">
+                    <div class="mini-browser-header">
+                        <div class="mini-window-control close"></div>
+                        <div class="mini-window-control minimize"></div>
+                        <div class="mini-window-control maximize"></div>
+                        <div class="mini-url-bar">feature-123-fix-bug.app.company.ai</div>
+                    </div>
+                    <div class="mini-browser-content">
+                        <div class="deployment-status pending" id="deploymentStatus">Pending</div>
+                        <div class="mini-content-placeholder">
+                            🚀 Performance Dashboard<br>
+                            <small style="font-size: 9px; opacity: 0.7;">Feature branch deployment</small>
+                        </div>
+                    </div>
+                </div>
             </div>
             
             <div class="stage">
@@ -959,15 +1062,15 @@
                     <button class="window-control minimize"></button>
                     <button class="window-control maximize"></button>
                 </div>
-                <div class="modal-url">feature-123-improve-performance.app.company.ai</div>
+                <div class="modal-url">feature-123-fix-bug.app.company.ai</div>
                 <div style="width: 70px;"></div> <!-- Spacer for centering -->
             </div>
             <div class="modal-content">
                 <div class="feature-preview">
                     <div class="feature-preview-content">
-                        <h1>🚀 Performance Dashboard</h1>
-                        <p>Feature branch deployed successfully</p>
-                        <p>New performance optimizations are now live</p>
+                        <h1>🚀 New feature environment created !</h1>
+                        <p>Feature environment deployed successfully</p>
+                        <p>You can now send the feature env link to a colleague for preview</p>
                         
                         
                         <div class="cta-section">
@@ -1219,25 +1322,27 @@
         }
 
         function updateCenterIcon() {
-            const centerIcon = document.getElementById('centerIcon');
+            const browserPreview = document.getElementById('browserPreview');
+            const deploymentStatus = document.getElementById('deploymentStatus');
             const featureUrlPreview = document.getElementById('featureUrlPreview');
             const featureStatus = document.getElementById('featureStatus');
             
-            centerIcon.className = `center-icon ${deploymentState}`;
+            browserPreview.className = `browser-preview ${deploymentState}`;
+            deploymentStatus.className = `deployment-status ${deploymentState}`;
             
             switch(deploymentState) {
                 case 'pending':
-                    centerIcon.innerHTML = '⏳';
+                    deploymentStatus.textContent = 'Pending';
                     featureStatus.textContent = 'Preparing deployment...';
                     featureUrlPreview.classList.remove('deployed');
                     break;
                 case 'loading':
-                    centerIcon.innerHTML = '🔄';
+                    deploymentStatus.textContent = 'Loading';
                     featureStatus.textContent = 'Deployment in progress...';
                     featureUrlPreview.classList.remove('deployed');
                     break;
                 case 'deployed':
-                    centerIcon.innerHTML = '🌐';
+                    deploymentStatus.textContent = 'Deployed';
                     featureStatus.textContent = '✓ Deployed and ready for testing';
                     featureUrlPreview.classList.add('deployed');
                     break;
